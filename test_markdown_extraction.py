@@ -81,6 +81,34 @@ class TestMarkdownExtraction(unittest.TestCase):
         actual = extract_entries_from_markdown.get_table_text(md, target_heading_text="My Target Table")
         self.assertEqual(actual, expected)
 
+    def test_get_table_text_ignores_label_not_in_header(self):
+        md = '''
+        This is my markdown
+        | Column | Headers | Are | Cool |
+        ---------------------------------
+        | No | They    | Are | Not |
+        
+        My Target Table <-- That's the label that we should ignore
+        | Another | Table   |
+        -----
+        | Yep     | Another |
+
+        Here is some other text
+        | And | Another | Table |
+        ---------------------------------
+        | It  | Is      | Not   |
+        | A   | Dining  | Table |
+        '''
+
+        expected = ''' 
+        | Column | Headers | Are | Cool |
+        ---------------------------------
+        | No | They    | Are | Not |'''.strip()
+        expected = '\n'.join([line.strip() for line in expected.splitlines()])
+
+        actual = extract_entries_from_markdown.get_table_text(md, target_heading_text="My Target Table")
+        self.assertEqual(actual, expected)
+
     def test_table_to_rows_returns_empty_for_no_text(self):
         no_text_items = [None, '', ' ']
         expected = [] 
