@@ -16,7 +16,7 @@ class TestMarkdownExtraction(unittest.TestCase):
         md = '''
         This is my markdown
         | Column | Headers | Are | Cool |
-        ---------------------------------
+        |--------|---------|-----|------|
         | Yep    | They    | Are | Yes  |
         
         # Heading
@@ -24,7 +24,7 @@ class TestMarkdownExtraction(unittest.TestCase):
 
         expected = ''' 
         | Column | Headers | Are | Cool |
-        ---------------------------------
+        |--------|---------|-----|------|
         | Yep    | They    | Are | Yes  |'''.strip()
         expected = '\n'.join([line.strip() for line in expected.splitlines()])
 
@@ -35,18 +35,18 @@ class TestMarkdownExtraction(unittest.TestCase):
         md = '''
         This is my markdown
         | Column | Headers | Are | Cool |
-        ---------------------------------
+        |--------|---------|-----|------|
         | No | They    | Are | Not |
         
         # Heading
         | Another | Table |
-        -----
+        |--|---|
         | Yep     | Another |
         '''
 
         expected = ''' 
         | Column | Headers | Are | Cool |
-        ---------------------------------
+        |--------|---------|-----|------|
         | No | They    | Are | Not |'''.strip()
         expected = '\n'.join([line.strip() for line in expected.splitlines()])
 
@@ -57,24 +57,24 @@ class TestMarkdownExtraction(unittest.TestCase):
         md = '''
         This is my markdown
         | Column | Headers | Are | Cool |
-        ---------------------------------
+        |--------|---------|-----|------|
         | No | They    | Are | Not |
         
         # My Target Table
         | Another | Table   |
-        -----
+        |--|---|
         | Yep     | Another |
 
         Here is some other text
         | And | Another | Table |
-        ---------------------------------
+        |-----|---------|-------|
         | It  | Is      | Not   |
         | A   | Dining  | Table |
         '''
 
         expected = ''' 
         | Another | Table   |
-        -----
+        |--|---|
         | Yep     | Another |'''.strip()
         expected = '\n'.join([line.strip() for line in expected.splitlines()])
 
@@ -85,24 +85,24 @@ class TestMarkdownExtraction(unittest.TestCase):
         md = '''
         This is my markdown
         | Column | Headers | Are | Cool |
-        ---------------------------------
+        |--------|---------|-----|------|
         | No | They    | Are | Not |
         
         My Target Table <-- That's the label that we should ignore
         | Another | Table   |
-        -----
+        | ------- | ------- |
         | Yep     | Another |
 
         Here is some other text
         | And | Another | Table |
-        ---------------------------------
+        |-----|---------|-------|
         | It  | Is      | Not   |
         | A   | Dining  | Table |
         '''
 
         expected = ''' 
         | Column | Headers | Are | Cool |
-        ---------------------------------
+        |--------|---------|-----|------|
         | No | They    | Are | Not |'''.strip()
         expected = '\n'.join([line.strip() for line in expected.splitlines()])
 
@@ -120,7 +120,7 @@ class TestMarkdownExtraction(unittest.TestCase):
     def test_table_to_dictionary_returns_entries_for_table(self):
         table_md = '''
         | First | Second | Third |
-        -----
+        |-|-|---|
         | A | B | C |
         |   1  |  2   | 3   |
         | uno |   dos |    tres    |'''.strip()

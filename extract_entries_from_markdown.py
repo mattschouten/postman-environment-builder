@@ -19,7 +19,17 @@ class TRANSITION_LABELS:
     SHOULD_APPEND_TEXT = 'APPEND_TEXT'
 
 def is_table_line(line):
+    return _is_table_line(line) and not _is_dashes_and_pipes_only(line)
+
+def is_table_dash_row(line):
+    return _is_table_line(line) and _is_dashes_and_pipes_only(line)
+    #return re.search("(?:\|[ \-\t]*)+\|", line)
+
+def _is_table_line(line):
     return re.search("(?:\|.+\|)|(?:-{3,})", line)
+
+def _is_dashes_and_pipes_only(line):
+    return len(re.sub('[\|\\s-]', '', line)) == 0
 
 def not_table_line(line):
     return not is_table_line(line)
@@ -44,11 +54,15 @@ def get_state_transitions(target_heading_text):
         [STATE.WATCHING_WAITING, is_table_line, STATE.IN_TABLE, True, True],
         [STATE.WATCHING_WAITING, is_target_label_heading_curry, STATE.TARGET_LABEL_FOUND, False, False],
         [STATE.IN_TABLE, is_table_line, STATE.IN_TABLE, False, True],
+        [STATE.IN_TABLE, is_table_dash_row, STATE.ON_TABLE_DASH_ROW, False, True],
         [STATE.IN_TABLE, not_table_line, STATE.FINISHED_UNLABELED_TABLE, False, False],
+        [STATE.ON_TABLE_DASH_ROW, is_table_line, STATE.IN_TABLE, False, True],
         [STATE.FINISHED_UNLABELED_TABLE, is_target_label_heading_curry, STATE.TARGET_LABEL_FOUND, False, False],
         [STATE.TARGET_LABEL_FOUND, is_table_line, STATE.IN_TARGET_TABLE, True, True],
         [STATE.IN_TARGET_TABLE, is_table_line, STATE.IN_TARGET_TABLE, False, True],
-        [STATE.IN_TARGET_TABLE, not_table_line, STATE.FINISHED_TARGET_TABLE, False, False]
+        [STATE.IN_TARGET_TABLE, is_table_dash_row, STATE.ON_TARGET_TABLE_DASH_ROW, False, True],
+        [STATE.IN_TARGET_TABLE, not_table_line, STATE.FINISHED_TARGET_TABLE, False, False],
+        [STATE.ON_TARGET_TABLE_DASH_ROW, is_table_line, STATE.IN_TARGET_TABLE, False, True],
     ]
     transition_dictionaries = [dict(zip(STATE_TRANSITION_LABELS, transition)) for transition in STATE_TRANSITIONS]
     starting_states = list(set([td[TRANSITION_LABELS.START_STATE] for td in transition_dictionaries]))
@@ -70,8 +84,8 @@ def get_table_text(markdown, target_heading_text = None):
                 state = transition[TRANSITION_LABELS.NEXT_STATE]
                 if transition[TRANSITION_LABELS.SHOULD_START_NEW_TEXT]: table_text = []
                 if transition[TRANSITION_LABELS.SHOULD_APPEND_TEXT]: table_text.append(line)
-                continue
-        
+                break
+
         if state not in TRANSITIONS:
             break
 
@@ -88,7 +102,7 @@ def table_to_rows(table_text):
     lines = table_text.splitlines()
     headers = [entry.strip() for entry in lines[0].split('|') if entry and not entry.isspace()]
 
-    entry_lines = [line for line in lines[1:] if not line.startswith('---')]
+    entry_lines = [line for line in lines[1:] if not _is_dashes_and_pipes_only(line)]
 
     for entry in entry_lines:
         cells = [cell.strip() for cell in entry.split('|') if cell and not cell.isspace()]
