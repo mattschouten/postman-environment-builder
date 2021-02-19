@@ -2,24 +2,6 @@
 
 import re
 
-class STATE:
-    WATCHING_WAITING = 'WATCHING_WAITING'
-    IN_TABLE = 'IN_TABLE'
-    ON_TABLE_DASH_ROW = 'ON_TABLE_DASH_ROW'
-    FINISHED_UNLABELED_TABLE = 'FINISHED_UNLABELED_TABLE'
-    TARGET_LABEL_FOUND = 'TARGET_LABEL_FOUND'
-    IN_TARGET_TABLE = 'IN_TARGET_TABLE'
-    ON_TARGET_TABLE_DASH_ROW = 'ON_TARGET_TABLE_DASH_ROW'
-    FINISHED_TARGET_TABLE = 'FINISHED_TARGET_TABLE'
-    DONE = 'DONE'
-
-class TRANSITION_LABELS:
-    START_STATE = 'START_STATE'
-    CONDITION_FUNCTION = 'CONDITION'
-    NEXT_STATE = 'NEXT_STATE'
-    SHOULD_START_NEW_TEXT = 'NEW_TEXT'
-    SHOULD_APPEND_TEXT = 'APPEND_TEXT'
-
 def is_table_line(line):
     return _is_table_line(line) and not _is_dashes_and_pipes_only(line)
 
@@ -39,19 +21,37 @@ def not_table_line(line):
 def is_target_label_heading(line, label_text):
     return label_text and re.search("#+.*{}".format(label_text), line)
 
+class STATE:
+    WATCHING_WAITING = 'WATCHING_WAITING'
+    IN_TABLE = 'IN_TABLE'
+    ON_TABLE_DASH_ROW = 'ON_TABLE_DASH_ROW'
+    FINISHED_UNLABELED_TABLE = 'FINISHED_UNLABELED_TABLE'
+    TARGET_LABEL_FOUND = 'TARGET_LABEL_FOUND'
+    IN_TARGET_TABLE = 'IN_TARGET_TABLE'
+    ON_TARGET_TABLE_DASH_ROW = 'ON_TARGET_TABLE_DASH_ROW'
+    FINISHED_TARGET_TABLE = 'FINISHED_TARGET_TABLE'
+    DONE = 'DONE'
+
+class TRANSITION_LABELS:
+    START_STATE = 'START_STATE'
+    CONDITION_FUNCTION = 'CONDITION'
+    NEXT_STATE = 'NEXT_STATE'
+    SHOULD_START_NEW_TEXT = 'NEW_TEXT'
+    SHOULD_APPEND_TEXT = 'APPEND_TEXT'
+
+    ALL_LABELS = (
+        START_STATE,
+        CONDITION_FUNCTION,
+        NEXT_STATE,
+        SHOULD_START_NEW_TEXT,
+        SHOULD_APPEND_TEXT
+    )
+
 def get_state_transitions(target_heading_text):
     
     def is_target_label_heading_curry(line):
         return is_target_label_heading(line, target_heading_text)
    
-    STATE_TRANSITION_LABELS = [
-        TRANSITION_LABELS.START_STATE,
-        TRANSITION_LABELS.CONDITION_FUNCTION,
-        TRANSITION_LABELS.NEXT_STATE,
-        TRANSITION_LABELS.SHOULD_START_NEW_TEXT,
-        TRANSITION_LABELS.SHOULD_APPEND_TEXT
-    ]
-
     STATE_TRANSITIONS = [
         [STATE.WATCHING_WAITING, is_table_line, STATE.IN_TABLE, True, True],
         [STATE.WATCHING_WAITING, is_target_label_heading_curry, STATE.TARGET_LABEL_FOUND, False, False],
@@ -66,7 +66,7 @@ def get_state_transitions(target_heading_text):
         [STATE.IN_TARGET_TABLE, not_table_line, STATE.FINISHED_TARGET_TABLE, False, False],
         [STATE.ON_TARGET_TABLE_DASH_ROW, is_table_line, STATE.IN_TARGET_TABLE, False, True],
     ]
-    transition_dictionaries = [dict(zip(STATE_TRANSITION_LABELS, transition)) for transition in STATE_TRANSITIONS]
+    transition_dictionaries = [dict(zip(TRANSITION_LABELS.ALL_LABELS, transition)) for transition in STATE_TRANSITIONS]
     starting_states = list(set([td[TRANSITION_LABELS.START_STATE] for td in transition_dictionaries]))
     transitions = {k: [td for td in transition_dictionaries if td[TRANSITION_LABELS.START_STATE] == k] for k in starting_states}
     return transitions
