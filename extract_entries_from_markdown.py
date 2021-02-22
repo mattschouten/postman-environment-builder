@@ -104,10 +104,14 @@ def table_to_rows(table_text):
     lines = table_text.splitlines()
     headers = [entry.strip() for entry in lines[0].split('|') if entry and not entry.isspace()]
 
-    entry_lines = [line for line in lines[1:] if not _is_dashes_and_pipes_only(line)]
+    entry_lines = [line.strip() for line in lines[1:] if not _is_dashes_and_pipes_only(line)]
 
     for entry in entry_lines:
-        cells = [cell.strip() for cell in entry.split('|') if cell and not cell.isspace()]
-        rows.append(dict(zip(headers, cells)))
+        cells = [cell.strip() for cell in entry.split('|')][1:-1]
+        row = dict(zip(headers, cells))
+        for key in headers:
+            if row[key] == '': row.pop(key)
+
+        rows.append(row)
 
     return rows

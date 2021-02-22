@@ -134,3 +134,21 @@ class TestMarkdownExtraction(unittest.TestCase):
 
         actual = extract_entries_from_markdown.table_to_rows(table_text)
         self.assertEqual(actual, expected)
+
+    def test_table_to_dictionary_returns_sparse_entries_for_sparse_table(self):
+        table_md = '''
+        | Name | Literal        | KV_Name | KV_Value |
+        |------|----------------|---------|----------|
+        | X    | Marks the Spot |         |          |
+        | Y    |                | Why     | Not      |
+        | Zed  |                | Not     | Zee      |'''.strip()
+        table_text = '\n'.join([line.strip() for line in table_md.splitlines()])
+
+        expected = [
+            {'Name': 'X', 'Literal': 'Marks the Spot' },
+            {'Name': 'Y', 'KV_Name': 'Why', 'KV_Value': 'Not'},
+            {'Name': 'Zed', 'KV_Name': 'Not', 'KV_Value': 'Zee'}
+        ]
+
+        actual = extract_entries_from_markdown.table_to_rows(table_text)
+        self.assertEqual(actual, expected)
