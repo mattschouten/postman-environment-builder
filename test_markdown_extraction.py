@@ -2,7 +2,7 @@ import unittest
 import extract_entries_from_markdown
 
 class TestMarkdownExtraction(unittest.TestCase):
-    
+
     def test_get_table_text_returns_empty_string_if_markdown_empty(self):
         md = '''
         '''
@@ -18,11 +18,11 @@ class TestMarkdownExtraction(unittest.TestCase):
         | Column | Headers | Are | Cool |
         |--------|---------|-----|------|
         | Yep    | They    | Are | Yes  |
-        
+
         # Heading
         '''
 
-        expected = ''' 
+        expected = '''
         | Column | Headers | Are | Cool |
         |--------|---------|-----|------|
         | Yep    | They    | Are | Yes  |'''.strip()
@@ -37,14 +37,14 @@ class TestMarkdownExtraction(unittest.TestCase):
         | Column | Headers | Are | Cool |
         |--------|---------|-----|------|
         | No | They    | Are | Not |
-        
+
         # Heading
         | Another | Table |
         |--|---|
         | Yep     | Another |
         '''
 
-        expected = ''' 
+        expected = '''
         | Column | Headers | Are | Cool |
         |--------|---------|-----|------|
         | No | They    | Are | Not |'''.strip()
@@ -59,7 +59,7 @@ class TestMarkdownExtraction(unittest.TestCase):
         | Column | Headers | Are | Cool |
         |--------|---------|-----|------|
         | No | They    | Are | Not |
-        
+
         # My Target Table
         | Another | Table   |
         |--|---|
@@ -72,7 +72,7 @@ class TestMarkdownExtraction(unittest.TestCase):
         | A   | Dining  | Table |
         '''
 
-        expected = ''' 
+        expected = '''
         | Another | Table   |
         |--|---|
         | Yep     | Another |'''.strip()
@@ -87,7 +87,7 @@ class TestMarkdownExtraction(unittest.TestCase):
         | Column | Headers | Are | Cool |
         |--------|---------|-----|------|
         | No | They    | Are | Not |
-        
+
         My Target Table <-- That's the label that we should ignore
         | Another | Table   |
         | ------- | ------- |
@@ -100,7 +100,7 @@ class TestMarkdownExtraction(unittest.TestCase):
         | A   | Dining  | Table |
         '''
 
-        expected = ''' 
+        expected = '''
         | Column | Headers | Are | Cool |
         |--------|---------|-----|------|
         | No | They    | Are | Not |'''.strip()
@@ -111,7 +111,7 @@ class TestMarkdownExtraction(unittest.TestCase):
 
     def test_table_to_rows_returns_empty_for_no_text(self):
         no_text_items = [None, '', ' ']
-        expected = [] 
+        expected = []
 
         for no_text_item in no_text_items:
             actual = extract_entries_from_markdown.table_to_rows(no_text_item)

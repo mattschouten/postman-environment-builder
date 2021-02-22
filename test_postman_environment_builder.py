@@ -17,7 +17,7 @@ class TestMarkdownExtraction(unittest.TestCase):
             | Name | Literal Value     |
             ----------------
             | NAME | Literally A Value |
-        ''' 
+        '''
 
         entries = postman_environment_builder.get_entries(md)
 
@@ -38,7 +38,7 @@ class TestMarkdownExtraction(unittest.TestCase):
             | Name | Key Vault Name    | Key Vault Value         |
             ----------------
             | Fred | Very Secure Vault | Third Box from the Left |
-        ''' 
+        '''
 
         entries = postman_environment_builder.get_entries(md)
 

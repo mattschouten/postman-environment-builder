@@ -48,10 +48,10 @@ class TRANSITION_LABELS:
     )
 
 def get_state_transitions(target_heading_text):
-    
+
     def is_target_label_heading_curry(line):
         return is_target_label_heading(line, target_heading_text)
-   
+
     STATE_TRANSITIONS = [
         [STATE.WATCHING_WAITING, is_table_line, STATE.IN_TABLE, True, True],
         [STATE.WATCHING_WAITING, is_target_label_heading_curry, STATE.TARGET_LABEL_FOUND, False, False],
