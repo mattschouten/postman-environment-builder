@@ -3,7 +3,8 @@
 import sys
 import subprocess
 import re
-import extract_entries_from_markdown
+#import extract_entries_from_markdown
+import PostmanEnvironmentBuilder.extract_entries_from_markdown as extract_entries_from_markdown
 
 def get_secret(key_name, vault_name):
     print("Looking up {0} from {1} using 'az keyvault secret show --vault-name \"{1}\" -n \"{0}\"'".format(key_name, vault_name))

@@ -1,5 +1,5 @@
 import unittest
-import extract_entries_from_markdown
+import PostmanEnvironmentBuilder.extract_entries_from_markdown as extract_entries_from_markdown
 
 class TestMarkdownExtraction(unittest.TestCase):
 
