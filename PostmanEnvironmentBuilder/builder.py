@@ -7,10 +7,10 @@ import re
 import PostmanEnvironmentBuilder.extract_entries_from_markdown as extract_entries_from_markdown
 
 def get_secret(key_name, vault_name):
-    print("Looking up {0} from {1} using 'az keyvault secret show --vault-name \"{1}\" -n \"{0}\"'".format(key_name, vault_name))
-    az_process = subprocess.Popen(['az', 'keyvault', 'secret', 'show', '--vault-name', vault_name, '-n', key_name], stdout=subprocess.PIPE)
-    jq_process = subprocess.Popen(['jq', '-r', '.value'], stdin=az_process.stdout, stdout=subprocess.PIPE)
-    out, err = jq_process.communicate()
+    print("Looking up {0} from {1} using 'az keyvault secret show --vault-name \"{1}\" -n \"{0}\" --query 'value' -o tsv'".format(key_name, vault_name))
+    az_process = subprocess.Popen(['az', 'keyvault', 'secret', 'show', '--vault-name', vault_name, '-n', key_name, \
+                                   '--query', 'value', '-o', 'tsv'], stdout=subprocess.PIPE)
+    out, err = az_process.communicate()
 
     return out.decode('utf-8').strip()
 

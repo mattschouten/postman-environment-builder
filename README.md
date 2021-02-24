@@ -6,7 +6,7 @@ A tool for creating a Postman environment from a table in a Markdown file.  It w
 
 Postman Environment Builder is written in Python.  It runs on both Python 2 and Python 3.  It does not require any non-standard Python libraries.
 
-Azure keyvault key retrieval depends on [the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/) and [jq](https://stedolan.github.io/jq/).
+Azure keyvault key retrieval depends on [the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/).
 
 ## Usage
 
@@ -106,5 +106,3 @@ Or, on Python 2
 ```bash
 python -m unittest discover
 ```
-
-It'd be nice to simplify and remove the `jq` dependency.  Not a big deal, but simpler.
