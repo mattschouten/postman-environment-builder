@@ -15,7 +15,7 @@ def get_secret(key_name, vault_name):
     return out.decode('utf-8').strip()
 
 def format_postman_variable(variable_name, value):
-    return '{{"key": {}, "value": {}, "enabled": true }}'.format(variable_name, value)
+    return '{{"key": "{}", "value": "{}", "enabled": true }}'.format(variable_name, value)
 
 def build_postman_environment(environment_name, postman_variables):
     variables = ['\t\t' + format_postman_variable(k, v) for k,v in postman_variables.items()]
