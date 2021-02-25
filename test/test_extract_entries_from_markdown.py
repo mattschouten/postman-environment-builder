@@ -1,7 +1,7 @@
 import unittest
 import PostmanEnvironmentBuilder.extract_entries_from_markdown as extract_entries_from_markdown
 
-class TestMarkdownExtraction(unittest.TestCase):
+class TestExtractEntriesFromMarkdown(unittest.TestCase):
 
     def test_get_table_text_returns_empty_string_if_markdown_empty(self):
         md = '''

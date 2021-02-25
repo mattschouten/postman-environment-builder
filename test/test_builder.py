@@ -1,7 +1,7 @@
 import unittest
 import PostmanEnvironmentBuilder.builder as postman_environment_builder
 
-class TestMarkdownExtraction(unittest.TestCase):
+class TestPostmanEnvironmentBuilder(unittest.TestCase):
 
     def test_get_entries_returns_dictionary_with_empty_arrays_if_environment_table_not_found(self):
         entries = postman_environment_builder.get_entries()
