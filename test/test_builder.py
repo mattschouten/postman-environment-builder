@@ -1,3 +1,4 @@
+import json
 import unittest
 import PostmanEnvironmentBuilder.builder as postman_environment_builder
 
@@ -54,3 +55,34 @@ class TestPostmanEnvironmentBuilder(unittest.TestCase):
         }
 
         self.assertEqual(entries, expected)
+
+    def test_encodes_quotes(self):
+        md = '''
+            | Name | Literal Value            |
+            ----------------
+            | NAME | Double " single ' quotes |
+        '''
+
+        entries = postman_environment_builder.get_entries(md)
+
+        vars = postman_environment_builder.entries_to_postman_variables(entries)
+
+        output = postman_environment_builder.build_postman_environment("my env", vars).strip()
+
+        parsed = json.loads(output);
+
+        expected = {
+            'id': 'my env',
+            'name': 'my env',
+            'values': [
+                {
+                    'key': 'NAME',
+                    'value': 'Double " single \' quotes',
+                    'enabled': True
+                }
+            ],
+            '_postman_variable_scope': 'environment',
+            '_postman_exported_using': 'Postman/7.36.1'
+        }
+
+        self.assertEqual(parsed, expected)
