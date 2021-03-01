@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
+import json
 import sys
 import subprocess
 import re
-#import extract_entries_from_markdown
 import PostmanEnvironmentBuilder.extract_entries_from_markdown as extract_entries_from_markdown
 
 def get_secret(key_name, vault_name):
@@ -15,22 +15,24 @@ def get_secret(key_name, vault_name):
     return out.decode('utf-8').strip()
 
 def format_postman_variable(variable_name, value):
-    return '{{"key": "{}", "value": "{}", "enabled": true }}'.format(variable_name, value)
+    return {
+        'key': variable_name,
+        'value': value,
+        'enabled': True
+    }
 
 def build_postman_environment(environment_name, postman_variables):
-    variables = ['\t\t' + format_postman_variable(k, v) for k,v in postman_variables.items()]
+    variables = [format_postman_variable(k, v) for k,v in postman_variables.items()]
 
-    return '''
-    {{
-        "id": "{0}",
-        "name": "{0}",
-        "values": [
-    {1}
-        ],
-        "_postman_variable_scope": "environment",
-        "_postman_exported_using": "Postman/7.36.1"
-    }}
-    '''.format(environment_name, ',\n'.join(variables))
+    env = {
+        'id': environment_name,
+        'name': environment_name,
+        'values': variables,
+        '_postman_variable_scope': 'environment',
+        '_postman_exported_using': 'Postman/7.36.1'
+    }
+
+    return json.dumps(env, indent=4)
 
 def get_entries(markdown='', target_heading_text=''):
     entries = extract_entries_from_markdown.table_to_rows(extract_entries_from_markdown.get_table_text(markdown=markdown, target_heading_text=target_heading_text))
