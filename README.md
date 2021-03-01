@@ -10,7 +10,13 @@ Azure keyvault key retrieval depends on [the Azure CLI](https://docs.microsoft.c
 
 ## Usage
 
-The environment builder builds an environment (bet you didn't see that coming) from a table in a markdown file.  The script requires two positional arguments, and accepts an optional third:
+The environment builder builds an environment (bet you didn't see that coming) from a table in a markdown file.  The script requires two positional arguments, and accepts an optional third.  If you're using the third, the command might look like this:
+
+```bash
+python3 -m PostmanEnvironmentBuilder.builder Markdown_File.md "My Environment - Dev" "Our API - DEV"
+```
+
+### The Arguments
 
 | Argument                      | What It Does |
 | ----------------------------- | ------------ |
@@ -18,11 +24,7 @@ The environment builder builds an environment (bet you didn't see that coming) f
 | #1 - Postman Environment Name | Name to use in the program output as the name of the environment.  That is, what it'll be called in Postman. |
 | #2 - Label in Markdown        | Optional.  If there are multiple tables in the Markdown file, this is a string in a preceding Markdown header to identify which table you'd like to use.  This is useful if, for example, you keep your Dev and Prod environments described in the same Markdown file. |
 
-To run the environment builder with the optional "Label in Markdown" argument, your command will look like:
-
-```bash
-python3 -m PostmanEnvironmentBuilder.builder Markdown_File.md "My Environment - Dev" "Our API - DEV"
-```
+### The Markdown
 
 The markdown file for the above example might look something like:
 
